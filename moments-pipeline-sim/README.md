@@ -38,9 +38,63 @@ Starter project that mirrors an adtech "moments package" pipeline using:
    docker compose exec mysql mysql -uroot -proot moments < /workspace/moments-pipeline-sim/sql/002_indexes.sql
    ```
 
-4. Start the TypeScript API and producer, then run the Rust consumer.
+4. Install Node dependencies:
+
+   ```bash
+   cd apps/api-ts && npm install
+   cd ../producer-ts && npm install
+   cd ../../
+   ```
+
+5. Start the API in one shell:
+
+   ```bash
+   cd apps/api-ts
+   npm run dev
+   ```
+
+6. In another shell, install and export `protoc` once (required by Pulsar Rust crate):
+
+   ```bash
+   PROTOC_BIN="$(./scripts/setup-protoc.sh)"
+   export PROTOC="$PROTOC_BIN"
+   export OPENSSL_STATIC=1
+   ```
+
+7. In that same shell, run the Rust consumer:
+
+   ```bash
+   cd apps/consumer-rust
+   cargo run
+   ```
+
+8. Publish simulated events in another shell:
+
+   ```bash
+   cd apps/producer-ts
+   npm start
+   ```
+
+9. Verify pipeline output from API:
+
+   ```bash
+   curl "http://127.0.0.1:3000/moments/recent?limit=10"
+   curl "http://127.0.0.1:3000/campaigns/campaign_demo_1/triggers?from=2026-01-01T00:00:00.000Z&to=2030-01-01T00:00:00.000Z"
+   ```
+
+## What works end-to-end now
+
+- API accepts `POST /moments/ingest` and publishes to Pulsar `TOPIC_MOMENTS_RAW`.
+- Rust consumer subscribes to `TOPIC_MOMENTS_RAW` and:
+  - validates/deserializes payloads
+  - deduplicates by `event_id` (in-memory cache)
+  - computes score + trigger decision
+  - writes to MySQL (`moments_raw`, `moments_scored`, `ad_triggers`)
+  - records failures in `consumer_errors`
+  - publishes error payloads to `TOPIC_MOMENTS_DLQ`
+  - publishes scored payloads to `TOPIC_MOMENTS_SCORED`
 
 ## Notes
 
 - This is a starter scaffold intended for interview/internship prep.
-- Replace stub logic with real campaign rules, scoring, and metrics as you iterate.
+- Replace stub scoring and campaign logic with production-style rule/ML pipelines as you iterate.

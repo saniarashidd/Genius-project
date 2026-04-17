@@ -11,12 +11,11 @@ impl DedupeCache {
         }
     }
 
-    pub fn is_duplicate(&mut self, event_id: &str) -> bool {
-        if self.seen.contains(event_id) {
-            true
-        } else {
-            self.seen.insert(event_id.to_string());
-            false
-        }
+    pub fn has_seen(&self, event_id: &str) -> bool {
+        self.seen.contains(event_id)
+    }
+
+    pub fn mark_seen(&mut self, event_id: &str) {
+        self.seen.insert(event_id.to_string());
     }
 }
