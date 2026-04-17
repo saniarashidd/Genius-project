@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/moment-event.schema.json",
+  "title": "MomentEvent",
+  "type": "object",
+  "required": [
+    "event_id",
+    "event_time",
+    "league",
+    "game_id",
+    "moment_type",
+    "importance_score",
+    "metadata"
+  ],
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "minLength": 8
+    },
+    "event_time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "ingest_time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "league": {
+      "type": "string"
+    },
+    "game_id": {
+      "type": "string"
+    },
+    "team_id": {
+      "type": "string"
+    },
+    "player_id": {
+      "type": "string"
+    },
+    "moment_type": {
+      "type": "string",
+      "enum": ["goal", "lead_change", "timeout", "clutch_play", "milestone"]
+    },
+    "importance_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}
