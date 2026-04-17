@@ -1,0 +1,43 @@
+CREATE TABLE IF NOT EXISTS moments_raw (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  event_id VARCHAR(64) NOT NULL,
+  event_time DATETIME(3) NOT NULL,
+  ingest_time DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  league VARCHAR(32) NOT NULL,
+  game_id VARCHAR(64) NOT NULL,
+  team_id VARCHAR(64) NULL,
+  player_id VARCHAR(64) NULL,
+  moment_type VARCHAR(32) NOT NULL,
+  importance_score DECIMAL(6,5) NOT NULL,
+  metadata JSON NOT NULL,
+  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  UNIQUE KEY uk_moments_raw_event_id (event_id)
+);
+
+CREATE TABLE IF NOT EXISTS moments_scored (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  event_id VARCHAR(64) NOT NULL,
+  score DECIMAL(6,5) NOT NULL,
+  accepted BOOLEAN NOT NULL,
+  reason VARCHAR(255) NULL,
+  processed_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  UNIQUE KEY uk_moments_scored_event_id (event_id)
+);
+
+CREATE TABLE IF NOT EXISTS ad_triggers (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  event_id VARCHAR(64) NOT NULL,
+  campaign_id VARCHAR(64) NOT NULL,
+  triggered BOOLEAN NOT NULL,
+  trigger_reason VARCHAR(255) NULL,
+  triggered_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
+);
+
+CREATE TABLE IF NOT EXISTS consumer_errors (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  event_id VARCHAR(64) NULL,
+  error_type VARCHAR(64) NOT NULL,
+  payload JSON NULL,
+  details TEXT NOT NULL,
+  occurred_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
+);
