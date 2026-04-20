@@ -1,0 +1,5 @@
+moments-pipeline-sim/.bin/
+moments-pipeline-sim/apps/api-ts/dist/
+moments-pipeline-sim/apps/api-ts/node_modules/
+moments-pipeline-sim/apps/producer-ts/node_modules/
+moments-pipeline-sim/apps/consumer-rust/target/
