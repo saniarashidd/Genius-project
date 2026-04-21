@@ -46,6 +46,12 @@ tmux -f /exec-daemon/tmux.portal.conf attach-session -t moments-consumer
 tmux -f /exec-daemon/tmux.portal.conf attach-session -t moments-producer
 ```
 
+Stop everything:
+
+```bash
+./scripts/dev-down.sh
+```
+
 Verify:
 
 ```bash
