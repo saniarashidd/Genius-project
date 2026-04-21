@@ -19,6 +19,49 @@ Starter project that mirrors an adtech "moments package" pipeline using:
 
 ## Quick Start
 
+### One-command local start (recommended)
+
+From `moments-pipeline-sim/`:
+
+```bash
+./scripts/dev-up.sh
+```
+
+What this script does:
+- starts Pulsar + MySQL via Docker Compose
+- initializes MySQL schema
+- installs Node dependencies (API + producer)
+- installs a local `protoc` binary (if missing)
+- creates/reuses tmux sessions for:
+  - `moments-api`
+  - `moments-consumer`
+  - `moments-producer`
+
+Useful follow-ups:
+
+```bash
+tmux -f /exec-daemon/tmux.portal.conf ls
+tmux -f /exec-daemon/tmux.portal.conf attach-session -t moments-api
+tmux -f /exec-daemon/tmux.portal.conf attach-session -t moments-consumer
+tmux -f /exec-daemon/tmux.portal.conf attach-session -t moments-producer
+```
+
+Stop everything:
+
+```bash
+./scripts/dev-down.sh
+```
+
+Verify:
+
+```bash
+curl "http://127.0.0.1:3000/healthz"
+curl "http://127.0.0.1:3000/moments/recent?limit=10"
+curl "http://127.0.0.1:3000/campaigns/campaign_demo_1/triggers?from=2026-01-01T00:00:00.000Z&to=2030-01-01T00:00:00.000Z"
+```
+
+---
+
 1. Copy environment defaults:
 
    ```bash
