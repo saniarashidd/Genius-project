@@ -16,8 +16,12 @@ Train a baseline model that predicts whether the **next ball is a boundary**
   - Shared feature engineering logic used by both training and inference.
 - `src/train_boundary_model.py`
   - Trains a baseline classifier and writes model + metrics artifacts.
+- `src/inference.py`
+  - Reusable helpers used by both CLI inference and frontend UI.
 - `src/predict_scenario.py`
   - Loads the trained model and predicts boundary probability for one scenario.
+- `app.py`
+  - Streamlit frontend for single-state prediction and CSV game analysis.
 - `requirements.txt`
   - Python dependencies.
 
@@ -33,8 +37,10 @@ cricket-ml/
   src/
     generate_sample_data.py
     features.py
+    inference.py
     train_boundary_model.py
     predict_scenario.py
+  app.py
   requirements.txt
 ```
 
@@ -50,6 +56,22 @@ python3 src/generate_sample_data.py --matches 120 --seed 42 --output data/ball_b
 python3 src/train_boundary_model.py --input data/ball_by_ball_sample.csv --artifacts-dir artifacts --seed 42
 python3 src/predict_scenario.py --model-path artifacts/boundary_model.joblib --scenario '{"match_id":"M00001","format":"T20","innings":1,"batting_team":"India","bowling_team":"Australia","venue":"Wankhede","toss_winner":"India","toss_decision":"bat","over":18,"ball_in_over":2,"ball_index":110,"batter_hand":"R","bowler_style":"pace","score":158,"wickets":5,"runs_this_ball":0,"is_wicket":0,"run_rate":8.62,"target":170}'
 ```
+
+### Frontend app
+
+After training at least once:
+
+```bash
+streamlit run app.py
+```
+
+What the UI supports:
+- **Single game state prediction:** form inputs for match context -> boundary probability.
+- **CSV game analysis:** upload a ball-by-ball CSV and get:
+  - average predicted boundary probability
+  - max/min probability
+  - count of high-risk balls (>= 0.3)
+  - downloadable per-ball prediction table
 
 If you prefer a virtual environment, install `python3-venv` first and then use
 `.venv` as usual.

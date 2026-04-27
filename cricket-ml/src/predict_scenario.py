@@ -2,12 +2,8 @@ from __future__ import annotations
 
 import argparse
 import json
-from pathlib import Path
 
-import joblib
-import pandas as pd
-
-from features import LABEL_COLUMN, build_feature_frame
+from inference import load_model, predict_single_scenario
 
 
 def parse_args() -> argparse.Namespace:
@@ -38,29 +34,15 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
-    model_path = Path(args.model_path)
-    if not model_path.exists():
-        raise FileNotFoundError(f"Model not found at: {model_path}")
-
-    model = joblib.load(model_path)
+    model = load_model(args.model_path)
     scenario_dict = json.loads(args.scenario)
-
-    # Label is unknown at inference; set a dummy placeholder.
-    scenario_dict[LABEL_COLUMN] = int(scenario_dict.get(LABEL_COLUMN, 0))
-    row = pd.DataFrame([scenario_dict])
-    feature_set = build_feature_frame(row)
-    features = feature_set.X
-
-    if hasattr(model, "predict_proba"):
-        boundary_prob = float(model.predict_proba(features)[0][1])
-    else:
-        boundary_prob = float(model.predict(features)[0])
+    result = predict_single_scenario(model, scenario_dict)
 
     print(
         json.dumps(
             {
-                "scenario": scenario_dict,
-                "predicted_boundary_probability": round(boundary_prob, 4),
+                "scenario": result.enriched_row,
+                "predicted_boundary_probability": round(result.boundary_probability, 4),
             },
             indent=2,
         )

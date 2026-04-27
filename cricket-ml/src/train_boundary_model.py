@@ -17,7 +17,12 @@ from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder
 
-from features import CATEGORICAL_FEATURES, LABEL_COLUMN, NUMERIC_FEATURES, build_feature_frame
+from features import (
+    CATEGORICAL_FEATURES,
+    LABEL_COLUMN,
+    NUMERIC_FEATURES,
+    build_feature_frame,
+)
 
 
 def parse_args() -> argparse.Namespace:
