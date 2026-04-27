@@ -3,3 +3,8 @@ moments-pipeline-sim/apps/api-ts/dist/
 moments-pipeline-sim/apps/api-ts/node_modules/
 moments-pipeline-sim/apps/producer-ts/node_modules/
 moments-pipeline-sim/apps/consumer-rust/target/
+cricket-ml/.venv/
+cricket-ml/artifacts/
+cricket-ml/data/*.csv
+cricket-ml/__pycache__/
+cricket-ml/src/__pycache__/
